@@ -14,14 +14,18 @@ from pathlib import Path
 marketplace_path = Path(sys.argv[1])
 plugin_path = Path(sys.argv[2])
 repo_root = Path(sys.argv[3])
+package_path = repo_root / "package.json"
 
 if not marketplace_path.exists():
     raise AssertionError(".github/plugin/marketplace.json must exist")
 if not plugin_path.exists():
     raise AssertionError("plugin.json must exist")
+if not package_path.exists():
+    raise AssertionError("package.json must exist")
 
 marketplace = json.loads(marketplace_path.read_text(encoding="utf-8"))
 plugin = json.loads(plugin_path.read_text(encoding="utf-8"))
+package = json.loads(package_path.read_text(encoding="utf-8"))
 
 def assert_equal(actual, expected, label):
     if actual != expected:
@@ -67,6 +71,7 @@ assert_equal(marketplace_plugin.get("category"), "Developer Tools", "marketplace
 assert_equal(plugin.get("name"), marketplace_plugin.get("name"), "plugin manifest name")
 assert_equal(plugin.get("description"), marketplace_plugin.get("description"), "plugin description")
 assert_equal(plugin.get("version"), marketplace_plugin.get("version"), "plugin version")
+assert_equal(plugin.get("version"), package.get("version"), "package version")
 assert_equal(
     marketplace.get("metadata", {}).get("version"),
     plugin.get("version"),
