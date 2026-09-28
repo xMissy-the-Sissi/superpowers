@@ -32,12 +32,18 @@ read_json_field() {
     local child_field="${BASH_REMATCH[3]}"
     local child_path
     child_path=$(echo "$child_field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
-    jq -er --arg array_field "$array_field" --arg item_name "$item_name" '
+    jq -er --arg array_field "$array_field" --arg item_name "$item_name" --arg field "$field" '
       .[$array_field] as $items
-      | if (($items | map(select(.name == $item_name)) | length) != 1) then
+      | ($items | map(select(.name == $item_name))) as $matches
+      | if (($matches | length) != 1) then
           error("expected exactly one " + $array_field + " entry named " + $item_name)
         else
-          ($items | map(select(.name == $item_name)) | .[0])'"$child_path"' | select(type == "string")
+          ($matches[0]'"$child_path"') as $value
+          | if ($value | type) != "string" then
+              error("expected JSON string at " + $field)
+            else
+              $value
+            end
         end
     ' "$file"
     return
@@ -45,7 +51,14 @@ read_json_field() {
   # Convert dot-path to jq path: "plugins.0.version" -> .plugins[0].version
   local jq_path
   jq_path=$(echo "$field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
-  jq -er "$jq_path | select(type == \"string\")" "$file"
+  jq -er --arg field "$field" '
+    ('"$jq_path"') as $value
+    | if ($value | type) != "string" then
+        error("expected JSON string at " + $field)
+      else
+        $value
+      end
+  ' "$file"
 }
 
 # Write a dotted field path in a JSON file, preserving formatting.
@@ -60,10 +73,11 @@ write_json_field() {
     local current_type
     current_type=$(jq -r --arg array_field "$array_field" --arg item_name "$item_name" '
       .[$array_field] as $items
-      | if (($items | map(select(.name == $item_name)) | length) != 1) then
+      | ($items | map(select(.name == $item_name))) as $matches
+      | if (($matches | length) != 1) then
           error("expected exactly one " + $array_field + " entry named " + $item_name)
         else
-          ($items | map(select(.name == $item_name)) | .[0])'"$child_path"' | type
+          ($matches[0]'"$child_path"') | type
         end
     ' "$file")
     if [[ "$current_type" != "string" ]]; then
