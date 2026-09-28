@@ -85,6 +85,12 @@ jq -e '
 
 jq -e '
   any(.files[];
+    .path == ".github/plugin/marketplace.json" and .field == "metadata.version")
+' "$REPO_ROOT/.version-bump.json" >/dev/null \
+  || fail "Copilot marketplace metadata version is not registered"
+
+jq -e '
+  any(.files[];
     .path == ".github/plugin/marketplace.json" and .field == "plugins[name=superpowers].version")
 ' "$REPO_ROOT/.version-bump.json" >/dev/null \
   || fail "Copilot marketplace manifest is not registered with name-based lookup"
