@@ -48,6 +48,22 @@ assert_equal(len(matching_plugins), 1, "superpowers plugin entry count")
 
 marketplace_plugin = matching_plugins[0]
 assert_equal(marketplace_plugin.get("source"), "./", "marketplace plugin source")
+assert_equal(
+    marketplace_plugin.get("description"),
+    "Core skills library: TDD, debugging, collaboration patterns, and proven techniques",
+    "marketplace plugin description",
+)
+assert_equal(
+    marketplace_plugin.get("author"),
+    {
+        "name": "Jesse Vincent",
+        "email": "jesse@fsck.com",
+        "url": "https://github.com/obra",
+    },
+    "marketplace plugin author",
+)
+assert_equal(marketplace_plugin.get("license"), "MIT", "marketplace plugin license")
+assert_equal(marketplace_plugin.get("category"), "Developer Tools", "marketplace plugin category")
 assert_equal(plugin.get("name"), marketplace_plugin.get("name"), "plugin manifest name")
 assert_equal(plugin.get("description"), marketplace_plugin.get("description"), "plugin description")
 assert_equal(plugin.get("version"), marketplace_plugin.get("version"), "plugin version")
