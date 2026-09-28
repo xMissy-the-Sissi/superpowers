@@ -45,6 +45,11 @@ marketplace_plugin = matching_plugins[0]
 assert_equal(marketplace_plugin.get("source"), "./", "marketplace plugin source")
 assert_equal(plugin.get("name"), marketplace_plugin.get("name"), "plugin manifest name")
 assert_equal(plugin.get("version"), marketplace_plugin.get("version"), "plugin version")
+assert_equal(
+    marketplace.get("metadata", {}).get("version"),
+    plugin.get("version"),
+    "marketplace metadata version",
+)
 assert_equal(plugin.get("homepage"), marketplace_plugin.get("homepage"), "plugin homepage")
 assert_equal(plugin.get("repository"), marketplace_plugin.get("repository"), "plugin repository")
 assert_equal(plugin.get("license"), marketplace_plugin.get("license"), "plugin license")

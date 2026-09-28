@@ -20,14 +20,15 @@ make_fixture() {
   local repo="$1"
   local yaml_body="$2"
 
-  mkdir -p "$repo/scripts" "$repo/.hermes-plugin"
+  mkdir -p "$repo/scripts" "$repo/.hermes-plugin" "$repo/.github/plugin"
   cp "$SCRIPT_SOURCE" "$repo/scripts/bump-version.sh"
   cat >"$repo/.version-bump.json" <<'JSON'
 {
   "files": [
     { "path": "package.json", "field": "version" },
     { "path": ".hermes-plugin/plugin.yaml", "field": "version" },
-    { "path": "marketplace.json", "field": "plugins[name=superpowers].version" }
+    { "path": ".github/plugin/marketplace.json", "field": "metadata.version" },
+    { "path": ".github/plugin/marketplace.json", "field": "plugins[name=superpowers].version" }
   ],
   "audit": { "exclude": [] }
 }
@@ -39,8 +40,11 @@ JSON
 }
 JSON
   printf '%s\n' "$yaml_body" >"$repo/.hermes-plugin/plugin.yaml"
-  cat >"$repo/marketplace.json" <<'JSON'
+  cat >"$repo/.github/plugin/marketplace.json" <<'JSON'
 {
+  "metadata": {
+    "version": "1.2.3"
+  },
   "plugins": [
     {
       "name": "superpowers",
@@ -66,9 +70,11 @@ make_fixture "$happy_repo" $'name: superpowers\nversion: 1.2.3'
   || fail "JSON manifest was not bumped"
 [[ "$(yq -r '.version' "$happy_repo/.hermes-plugin/plugin.yaml")" == "2.3.4" ]] \
   || fail "YAML manifest was not bumped"
-[[ "$(jq -r '.plugins[] | select(.name == "superpowers") | .version' "$happy_repo/marketplace.json")" == "2.3.4" ]] \
+[[ "$(jq -r '.metadata.version' "$happy_repo/.github/plugin/marketplace.json")" == "2.3.4" ]] \
+  || fail "marketplace metadata version was not bumped"
+[[ "$(jq -r '.plugins[] | select(.name == "superpowers") | .version' "$happy_repo/.github/plugin/marketplace.json")" == "2.3.4" ]] \
   || fail "selected marketplace plugin version was not bumped"
-[[ "$(jq -r '.plugins[] | select(.name == "other-plugin") | .version' "$happy_repo/marketplace.json")" == "9.9.9" ]] \
+[[ "$(jq -r '.plugins[] | select(.name == "other-plugin") | .version' "$happy_repo/.github/plugin/marketplace.json")" == "9.9.9" ]] \
   || fail "non-selected marketplace plugin version should remain unchanged"
 
 jq -e '
