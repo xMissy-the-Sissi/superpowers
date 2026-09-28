@@ -107,6 +107,7 @@ cmp -s "$TEST_ROOT/plugin.before" "$invalid_repo/.hermes-plugin/plugin.yaml" \
 invalid_json_repo="$TEST_ROOT/invalid-json"
 make_fixture "$invalid_json_repo" $'name: superpowers\nversion: 1.2.3'
 cp "$invalid_json_repo/package.json" "$TEST_ROOT/package-json.before"
+cp "$invalid_json_repo/.hermes-plugin/plugin.yaml" "$TEST_ROOT/plugin-yaml.before"
 
 jq '.metadata.version = 123' "$invalid_json_repo/.github/plugin/marketplace.json" >"$TEST_ROOT/invalid-marketplace.json"
 mv "$TEST_ROOT/invalid-marketplace.json" "$invalid_json_repo/.github/plugin/marketplace.json"
@@ -119,6 +120,8 @@ fi
 
 cmp -s "$TEST_ROOT/package-json.before" "$invalid_json_repo/package.json" \
   || fail "package.json changed before JSON validation failed"
+cmp -s "$TEST_ROOT/plugin-yaml.before" "$invalid_json_repo/.hermes-plugin/plugin.yaml" \
+  || fail "plugin.yaml changed before JSON validation failed"
 cmp -s "$TEST_ROOT/marketplace.before" "$invalid_json_repo/.github/plugin/marketplace.json" \
   || fail "invalid JSON marketplace manifest changed"
 
