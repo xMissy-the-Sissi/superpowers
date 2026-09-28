@@ -29,7 +29,8 @@
         "best-practices",
         "workflows"
       ],
-      "license": "MIT"
+      "license": "MIT",
+      "category": "Developer Tools"
     }
   ]
 }

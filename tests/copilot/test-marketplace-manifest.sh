@@ -33,6 +33,11 @@ assert_equal(
     "Marketplace for Superpowers core skills library",
     "marketplace description",
 )
+assert_equal(
+    marketplace.get("owner"),
+    {"name": "Jesse Vincent", "email": "jesse@fsck.com"},
+    "marketplace owner",
+)
 
 plugins = marketplace.get("plugins")
 if not isinstance(plugins, list):
@@ -44,16 +49,19 @@ assert_equal(len(matching_plugins), 1, "superpowers plugin entry count")
 marketplace_plugin = matching_plugins[0]
 assert_equal(marketplace_plugin.get("source"), "./", "marketplace plugin source")
 assert_equal(plugin.get("name"), marketplace_plugin.get("name"), "plugin manifest name")
+assert_equal(plugin.get("description"), marketplace_plugin.get("description"), "plugin description")
 assert_equal(plugin.get("version"), marketplace_plugin.get("version"), "plugin version")
 assert_equal(
     marketplace.get("metadata", {}).get("version"),
     plugin.get("version"),
     "marketplace metadata version",
 )
+assert_equal(plugin.get("author"), marketplace_plugin.get("author"), "plugin author")
 assert_equal(plugin.get("homepage"), marketplace_plugin.get("homepage"), "plugin homepage")
 assert_equal(plugin.get("repository"), marketplace_plugin.get("repository"), "plugin repository")
 assert_equal(plugin.get("license"), marketplace_plugin.get("license"), "plugin license")
 assert_equal(plugin.get("keywords"), marketplace_plugin.get("keywords"), "plugin keywords")
+assert_equal(plugin.get("category"), marketplace_plugin.get("category"), "plugin category")
 assert_equal(plugin.get("skills"), "./skills/", "plugin skills path")
 assert_equal(plugin.get("hooks"), "./hooks/hooks.json", "plugin hooks path")
 
