@@ -26,7 +26,8 @@ make_fixture() {
 {
   "files": [
     { "path": "package.json", "field": "version" },
-    { "path": ".hermes-plugin/plugin.yaml", "field": "version" }
+    { "path": ".hermes-plugin/plugin.yaml", "field": "version" },
+    { "path": "marketplace.json", "field": "plugins[name=superpowers].version" }
   ],
   "audit": { "exclude": [] }
 }
@@ -38,6 +39,20 @@ JSON
 }
 JSON
   printf '%s\n' "$yaml_body" >"$repo/.hermes-plugin/plugin.yaml"
+  cat >"$repo/marketplace.json" <<'JSON'
+{
+  "plugins": [
+    {
+      "name": "superpowers",
+      "version": "1.2.3"
+    },
+    {
+      "name": "other-plugin",
+      "version": "9.9.9"
+    }
+  ]
+}
+JSON
 }
 
 happy_repo="$TEST_ROOT/happy"
@@ -51,12 +66,22 @@ make_fixture "$happy_repo" $'name: superpowers\nversion: 1.2.3'
   || fail "JSON manifest was not bumped"
 [[ "$(yq -r '.version' "$happy_repo/.hermes-plugin/plugin.yaml")" == "2.3.4" ]] \
   || fail "YAML manifest was not bumped"
+[[ "$(jq -r '.plugins[] | select(.name == "superpowers") | .version' "$happy_repo/marketplace.json")" == "2.3.4" ]] \
+  || fail "selected marketplace plugin version was not bumped"
+[[ "$(jq -r '.plugins[] | select(.name == "other-plugin") | .version' "$happy_repo/marketplace.json")" == "9.9.9" ]] \
+  || fail "non-selected marketplace plugin version should remain unchanged"
 
 jq -e '
   any(.files[];
     .path == ".hermes-plugin/plugin.yaml" and .field == "version")
 ' "$REPO_ROOT/.version-bump.json" >/dev/null \
   || fail "Hermes manifest is not registered"
+
+jq -e '
+  any(.files[];
+    .path == ".github/plugin/marketplace.json" and .field == "plugins[name=superpowers].version")
+' "$REPO_ROOT/.version-bump.json" >/dev/null \
+  || fail "Copilot marketplace manifest is not registered with name-based lookup"
 
 invalid_repo="$TEST_ROOT/invalid"
 make_fixture "$invalid_repo" $'name: superpowers\nversion: 123'

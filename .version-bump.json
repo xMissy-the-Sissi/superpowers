@@ -9,9 +9,9 @@
     { "path": ".devin-plugin/plugin.json", "field": "version" },
     { "path": ".kimi-plugin/plugin.json", "field": "version" },
     { "path": ".muse-plugin/plugin.json", "field": "version" },
-    { "path": ".github/plugin/marketplace.json", "field": "plugins.0.version" },
-    { "path": ".claude-plugin/marketplace.json", "field": "plugins.0.version" },
-    { "path": ".muse-plugin/marketplace.json", "field": "plugins.0.version" },
+    { "path": ".github/plugin/marketplace.json", "field": "plugins[name=superpowers].version" },
+    { "path": ".claude-plugin/marketplace.json", "field": "plugins[name=superpowers].version" },
+    { "path": ".muse-plugin/marketplace.json", "field": "plugins[name=superpowers].version" },
     { "path": "gemini-extension.json", "field": "version" }
   ],
   "audit": {
