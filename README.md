@@ -23,6 +23,7 @@ Superpowers is a complete software development methodology for your coding agent
   - [Qwen Code](#qwen-code)
   - [Hermes Agent](#hermes-agent)
   - [Muse](#muse)
+  - [Multi-harness rollout](#multi-harness-rollout)
 - [The Basic Workflow](#the-basic-workflow)
 - [When Something Goes Wrong](#when-something-goes-wrong)
 - [Community](#community)
@@ -52,6 +53,10 @@ If you're using Superpowers in enterprise and could benefit from commercial supp
 ## Installation
 
 Installation differs by harness. If you use more than one, install Superpowers separately for each one.
+
+### Multi-harness rollout
+
+If you want to run Superpowers across many assistants with one repeatable process, use the rollout guide at [docs/system-wide-rollout.md](docs/system-wide-rollout.md). It covers version pinning, per-harness install/update commands, acceptance-test verification, and how to port unsupported harnesses.
 
 ### Claude Code
 
