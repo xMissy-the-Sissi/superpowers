@@ -22,18 +22,72 @@ fi
 # --- helpers ---
 
 # Read a dotted field path from a JSON file.
-# Handles both simple ("version") and nested ("plugins.0.version") paths.
+# Handles simple ("version"), indexed ("plugins.0.version"), and
+# name-selected ("plugins[name=superpowers].version") paths.
 read_json_field() {
   local file="$1" field="$2"
+  if [[ "$field" =~ ^([^.[]+)\[name=([^]]+)\]\.(.+)$ ]]; then
+    local array_field="${BASH_REMATCH[1]}"
+    local item_name="${BASH_REMATCH[2]}"
+    local child_field="${BASH_REMATCH[3]}"
+    local child_path
+    child_path=$(echo "$child_field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
+    jq -er --arg array_field "$array_field" --arg item_name "$item_name" --arg field "$field" '
+      .[$array_field] as $items
+      | ($items | map(select(.name == $item_name))) as $matches
+      | if (($matches | length) != 1) then
+          error("expected exactly one " + $array_field + " entry named " + $item_name)
+        else
+          ($matches[0]'"$child_path"') as $value
+          | if ($value | type) != "string" then
+              error("expected JSON string at " + $field)
+            else
+              $value
+            end
+        end
+    ' "$file"
+    return
+  fi
   # Convert dot-path to jq path: "plugins.0.version" -> .plugins[0].version
   local jq_path
   jq_path=$(echo "$field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
-  jq -r "$jq_path" "$file"
+  jq -er --arg field "$field" '
+    ('"$jq_path"') as $value
+    | if ($value | type) != "string" then
+        error("expected JSON string at " + $field)
+      else
+        $value
+      end
+  ' "$file"
 }
 
 # Write a dotted field path in a JSON file, preserving formatting.
 write_json_field() {
   local file="$1" field="$2" value="$3"
+  read_json_field "$file" "$field" >/dev/null
+  if [[ "$field" =~ ^([^.[]+)\[name=([^]]+)\]\.(.+)$ ]]; then
+    local array_field="${BASH_REMATCH[1]}"
+    local item_name="${BASH_REMATCH[2]}"
+    local child_field="${BASH_REMATCH[3]}"
+    local child_path
+    child_path=$(echo "$child_field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
+    local tmp="${file}.tmp"
+    jq --arg array_field "$array_field" --arg item_name "$item_name" --arg value "$value" '
+      .[$array_field] as $items
+      | if (($items | map(select(.name == $item_name)) | length) != 1) then
+          error("expected exactly one " + $array_field + " entry named " + $item_name)
+        else
+          .[$array_field] |= map(
+            if .name == $item_name then
+              ('"$child_path"' = $value)
+            else
+              .
+            end
+          )
+        end
+    ' "$file" > "$tmp" && mv "$tmp" "$file"
+    return
+  fi
   local jq_path
   jq_path=$(echo "$field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
   local tmp="${file}.tmp"

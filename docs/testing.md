@@ -10,6 +10,7 @@ Superpowers has two distinct kinds of tests, each in its own directory:
 Live in `tests/`. Currently:
 
 - `tests/brainstorm-server/` — node test suite for the brainstorm server JS code.
+- `tests/copilot/` — bash/Python checks for Copilot CLI marketplace and plugin manifests.
 - `tests/opencode/` — bash tests for OpenCode plugin loading, bootstrap caching, and tool registration.
 - `tests/codex-plugin-sync/` — bash sync verification.
 - `tests/kimi/` — bash/Python checks for Kimi plugin manifest wiring.
