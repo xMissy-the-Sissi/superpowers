@@ -104,4 +104,22 @@ cmp -s "$TEST_ROOT/package.before" "$invalid_repo/package.json" \
 cmp -s "$TEST_ROOT/plugin.before" "$invalid_repo/.hermes-plugin/plugin.yaml" \
   || fail "invalid YAML manifest changed"
 
+invalid_json_repo="$TEST_ROOT/invalid-json"
+make_fixture "$invalid_json_repo" $'name: superpowers\nversion: 1.2.3'
+cp "$invalid_json_repo/package.json" "$TEST_ROOT/package-json.before"
+
+jq '.metadata.version = 123' "$invalid_json_repo/.github/plugin/marketplace.json" >"$TEST_ROOT/invalid-marketplace.json"
+mv "$TEST_ROOT/invalid-marketplace.json" "$invalid_json_repo/.github/plugin/marketplace.json"
+cp "$invalid_json_repo/.github/plugin/marketplace.json" "$TEST_ROOT/marketplace.before"
+
+if /bin/bash "$invalid_json_repo/scripts/bump-version.sh" 2.3.4 \
+  >"$TEST_ROOT/invalid-json.out" 2>&1; then
+  fail "bump accepted a non-string JSON version"
+fi
+
+cmp -s "$TEST_ROOT/package-json.before" "$invalid_json_repo/package.json" \
+  || fail "package.json changed before JSON validation failed"
+cmp -s "$TEST_ROOT/marketplace.before" "$invalid_json_repo/.github/plugin/marketplace.json" \
+  || fail "invalid JSON marketplace manifest changed"
+
 echo "Version-bump tests passed"
