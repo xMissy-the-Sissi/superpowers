@@ -367,6 +367,11 @@ Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of t
 **Meta**
 - **writing-skills** - Create new skills following best practices (includes testing methodology)
 - **using-superpowers** - Introduction to the skills system
+- **rolling-out-superpowers** - Cross-harness install/update/verification workflow
+- **harness-capability-audit** - Determine harness capabilities before selecting execution path
+- **bootstrap-verification-and-recovery** - Verify and recover missing bootstrap behavior
+- **cost-aware-orchestration** - Control model/turn cost in subagent-heavy execution
+- **release-readiness-across-harnesses** - Pre-release checks for cross-harness integrity
 
 ## Philosophy
 

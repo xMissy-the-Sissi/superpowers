@@ -33,3 +33,8 @@ Use `subagent_spawn` to delegate work to isolated subagents. Fill prompt templat
 ## Task tracking
 
 Use `write_todos` for checklist tracking. Create one todo per skill checklist item, mark in_progress/completed as you go. If `write_todos` is unavailable, maintain a markdown task file via `write_file`/`edit_file`.
+
+## Shared fallback contract
+
+When native tools are missing or disabled, follow:
+`fallback-contract.md`

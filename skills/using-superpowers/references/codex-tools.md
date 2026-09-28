@@ -106,3 +106,8 @@ the user to use the App's native controls:
 
 The agent can still run tests, stage files, and output suggested branch
 names, commit messages, and PR descriptions for the user to copy.
+
+## Shared fallback contract
+
+When native tools are missing or disabled, follow:
+`fallback-contract.md`

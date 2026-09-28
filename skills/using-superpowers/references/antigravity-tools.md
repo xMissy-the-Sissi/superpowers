@@ -21,3 +21,8 @@ your plan. As you complete each step, edit the artifact to mark it done (`- [x]`
 If the plan changes, update the checklist. Keep it current — it is your source of
 truth for what remains; once the conversation gets long, re-read it before starting
 each step.
+
+## Shared fallback contract
+
+When native tools are missing or disabled, follow:
+`fallback-contract.md`
