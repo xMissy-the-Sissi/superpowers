@@ -95,6 +95,15 @@ jq -e '
 ' "$REPO_ROOT/.version-bump.json" >/dev/null \
   || fail "Copilot marketplace manifest is not registered with name-based lookup"
 
+for manifest in \
+  "$REPO_ROOT/.github/plugin/marketplace.json" \
+  "$REPO_ROOT/.claude-plugin/marketplace.json" \
+  "$REPO_ROOT/.muse-plugin/marketplace.json"
+do
+  jq -e '.plugins[] | select(.name == "superpowers")' "$manifest" >/dev/null \
+    || fail "$(basename "$(dirname "$manifest")") marketplace manifest is missing the superpowers plugin entry"
+done
+
 invalid_repo="$TEST_ROOT/invalid"
 make_fixture "$invalid_repo" $'name: superpowers\nversion: 123'
 cp "$invalid_repo/package.json" "$TEST_ROOT/package.before"
