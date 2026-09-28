@@ -68,21 +68,28 @@ assert_equal(
 )
 assert_equal(marketplace_plugin.get("license"), "MIT", "marketplace plugin license")
 assert_equal(marketplace_plugin.get("category"), "Developer Tools", "marketplace plugin category")
-assert_equal(plugin.get("name"), marketplace_plugin.get("name"), "plugin manifest name")
-assert_equal(plugin.get("description"), marketplace_plugin.get("description"), "plugin description")
-assert_equal(plugin.get("version"), marketplace_plugin.get("version"), "plugin version")
+shared_fields = [
+    "name",
+    "description",
+    "version",
+    "author",
+    "homepage",
+    "repository",
+    "license",
+    "keywords",
+    "category",
+]
+assert_equal(
+    {field: plugin.get(field) for field in shared_fields},
+    {field: marketplace_plugin.get(field) for field in shared_fields},
+    "shared plugin metadata",
+)
 assert_equal(plugin.get("version"), package.get("version"), "package version")
 assert_equal(
     marketplace.get("metadata", {}).get("version"),
     plugin.get("version"),
     "marketplace metadata version",
 )
-assert_equal(plugin.get("author"), marketplace_plugin.get("author"), "plugin author")
-assert_equal(plugin.get("homepage"), marketplace_plugin.get("homepage"), "plugin homepage")
-assert_equal(plugin.get("repository"), marketplace_plugin.get("repository"), "plugin repository")
-assert_equal(plugin.get("license"), marketplace_plugin.get("license"), "plugin license")
-assert_equal(plugin.get("keywords"), marketplace_plugin.get("keywords"), "plugin keywords")
-assert_equal(plugin.get("category"), marketplace_plugin.get("category"), "plugin category")
 assert_equal(plugin.get("skills"), "./skills/", "plugin skills path")
 assert_equal(plugin.get("hooks"), "./hooks/hooks.json", "plugin hooks path")
 
