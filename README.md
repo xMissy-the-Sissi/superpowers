@@ -23,6 +23,7 @@ Superpowers is a complete software development methodology for your coding agent
   - [Qwen Code](#qwen-code)
   - [Hermes Agent](#hermes-agent)
   - [Muse](#muse)
+  - [Multi-harness rollout](#multi-harness-rollout)
 - [The Basic Workflow](#the-basic-workflow)
 - [When Something Goes Wrong](#when-something-goes-wrong)
 - [Community](#community)
@@ -52,6 +53,10 @@ If you're using Superpowers in enterprise and could benefit from commercial supp
 ## Installation
 
 Installation differs by harness. If you use more than one, install Superpowers separately for each one.
+
+### Multi-harness rollout
+
+If you want to run Superpowers across many assistants with one repeatable process, use the rollout guide at [docs/system-wide-rollout.md](docs/system-wide-rollout.md). It covers version pinning, per-harness install/update commands, acceptance-test verification, and how to port unsupported harnesses.
 
 ### Claude Code
 
@@ -362,6 +367,14 @@ Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of t
 **Meta**
 - **writing-skills** - Create new skills following best practices (includes testing methodology)
 - **using-superpowers** - Introduction to the skills system
+- **rolling-out-superpowers** - Cross-harness install/update/verification workflow
+- **harness-capability-audit** - Determine harness capabilities before selecting execution path
+- **bootstrap-verification-and-recovery** - Verify and recover missing bootstrap behavior
+- **cost-aware-orchestration** - Control model/turn cost in subagent-heavy execution
+- **release-readiness-across-harnesses** - Pre-release checks for cross-harness integrity
+- **skill-regression-testing** - Repeatable validation workflow for skill changes
+- **skill-security-review** - Security review workflow for imported and updated skills
+- **skill-deprecation-and-migration** - Safe retire/replace workflow for skill lifecycle changes
 
 ## Philosophy
 

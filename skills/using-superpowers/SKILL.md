@@ -51,14 +51,35 @@ These thoughts mean STOP—you're rationalizing:
 
 ## Platform Adaptation
 
-If your harness appears here, read its reference file for special instructions:
+Read the canonical matrix first:
+
+- `references/harness-capability-matrix.md`
+
+If your harness appears below, read its reference file for special instructions:
 
 - Claude Code: `references/claude-code-tools.md`
 - Codex: `references/codex-tools.md`
+- Gemini CLI: `references/gemini-tools.md`
 - Pi: `references/pi-tools.md`
 - Antigravity: `references/antigravity-tools.md`
 - Hermes Agent: `references/hermes-tools.md`
 - Muse: `references/muse-tools.md`
+
+For first-class harnesses without a dedicated file yet (Cursor, Copilot CLI,
+Kimi Code, Qwen Code, Grok Build CLI, Devin CLI, Factory Droid, OpenCode),
+apply the inheritance and fallback notes from the matrix.
+
+## Bootstrap Health Check (when setup is uncertain)
+
+If behavior suggests bootstrap may be missing, run this quick check before deep work:
+
+1. Start a fresh session.
+2. Send: `Let's make a react todo list`
+3. Confirm `brainstorming` triggers before any code is written.
+
+If this check fails, follow harness-specific recovery notes in:
+
+- `../bootstrap-verification-and-recovery/SKILL.md`
 
 ## User Instructions
 

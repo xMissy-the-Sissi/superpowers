@@ -14,3 +14,8 @@ Pi core does not ship a standard subagent tool. The `pi-subagents` package is a 
 ## Task lists
 
 Pi core does not ship a standard task-list tool. If a todo/task extension is installed, use its documented tool. Otherwise use Superpowers plan files, checklists in Markdown, or a repo-local `TODO.md` for task tracking. Older Superpowers docs may refer to `TodoWrite`; treat that as the task-tracking action above.
+
+## Shared fallback contract
+
+When native tools are missing or disabled, follow:
+`fallback-contract.md`
