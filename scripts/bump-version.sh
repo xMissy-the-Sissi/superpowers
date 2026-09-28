@@ -64,26 +64,13 @@ read_json_field() {
 # Write a dotted field path in a JSON file, preserving formatting.
 write_json_field() {
   local file="$1" field="$2" value="$3"
+  read_json_field "$file" "$field" >/dev/null
   if [[ "$field" =~ ^([^.[]+)\[name=([^]]+)\]\.(.+)$ ]]; then
     local array_field="${BASH_REMATCH[1]}"
     local item_name="${BASH_REMATCH[2]}"
     local child_field="${BASH_REMATCH[3]}"
     local child_path
     child_path=$(echo "$child_field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
-    local current_type
-    current_type=$(jq -r --arg array_field "$array_field" --arg item_name "$item_name" '
-      .[$array_field] as $items
-      | ($items | map(select(.name == $item_name))) as $matches
-      | if (($matches | length) != 1) then
-          error("expected exactly one " + $array_field + " entry named " + $item_name)
-        else
-          ($matches[0]'"$child_path"') | type
-        end
-    ' "$file")
-    if [[ "$current_type" != "string" ]]; then
-      echo "error: expected JSON string at $field in $file" >&2
-      return 1
-    fi
     local tmp="${file}.tmp"
     jq --arg array_field "$array_field" --arg item_name "$item_name" --arg value "$value" '
       .[$array_field] as $items
@@ -103,12 +90,6 @@ write_json_field() {
   fi
   local jq_path
   jq_path=$(echo "$field" | sed -E 's/\.([0-9]+)/[\1]/g' | sed 's/^/./' | sed 's/\.\././g')
-  local current_type
-  current_type=$(jq -r "$jq_path | type" "$file")
-  if [[ "$current_type" != "string" ]]; then
-    echo "error: expected JSON string at $field in $file" >&2
-    return 1
-  fi
   local tmp="${file}.tmp"
   jq "$jq_path = \"$value\"" "$file" > "$tmp" && mv "$tmp" "$file"
 }
