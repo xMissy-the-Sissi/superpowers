@@ -372,6 +372,9 @@ Superpowers is built by [Jesse Vincent](https://blog.fsck.com) and the rest of t
 - **bootstrap-verification-and-recovery** - Verify and recover missing bootstrap behavior
 - **cost-aware-orchestration** - Control model/turn cost in subagent-heavy execution
 - **release-readiness-across-harnesses** - Pre-release checks for cross-harness integrity
+- **skill-regression-testing** - Repeatable validation workflow for skill changes
+- **skill-security-review** - Security review workflow for imported and updated skills
+- **skill-deprecation-and-migration** - Safe retire/replace workflow for skill lifecycle changes
 
 ## Philosophy
 
